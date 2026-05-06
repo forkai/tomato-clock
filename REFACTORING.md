@@ -343,8 +343,8 @@ npm run electron:build
 
 ## 后续优化建议
 
-1. 将所有 `.js` 测试文件迁移到 `.ts`
-2. 使用 `vitest` globals 替代显式导入
-3. 迁移到 `rolldownOptions` 替代 `esbuildOptions`
-4. 添加更多 Zod Schema 验证
-5. 等待 vite-plus 原生支持 electron 插件
+1. ~~将所有 `.js` 测试文件迁移到 `.ts`~~ ✅ 已完成
+2. ~~使用 `vitest` globals 替代显式导入~~ - 已使用 globals
+3. ~~迁移到 `rolldownOptions` 替代 `esbuildOptions`~~ - 已移除弃用选项
+4. 添加更多 Zod Schema 验证 - 根据需要添加
+5. 等待 vite-plus 原生支持 electron 插件 - 外部依赖
