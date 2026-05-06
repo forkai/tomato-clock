@@ -11,7 +11,11 @@
       "Bash(npm view *)",
       "Bash(mv /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk-bak)",
       "Bash(mkdir -p /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk)",
-      "Bash(npm init *)"
+      "Bash(npm init *)",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(npx electron *)"
     ]
   }
 }

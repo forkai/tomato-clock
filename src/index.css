@@ -2,17 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+html, body, #root {
   @apply bg-background text-foreground;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
 }
 
-/* 隐藏滚动条 */
+/* 隐藏所有滚动条 */
 ::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 * {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
