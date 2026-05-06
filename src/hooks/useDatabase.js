@@ -109,12 +109,53 @@ export function useDatabase() {
     return result[0].values.map(([date, count]) => ({ date, count }));
   }, [db]);
 
+  // 清除所有数据
+  const clearAllData = useCallback(() => {
+    if (!db) return;
+    db.run('DELETE FROM sessions');
+  }, [db]);
+
+  // 生成模拟数据（用于测试）
+  const generateMockData = useCallback(() => {
+    if (!db) return;
+
+    const now = new Date();
+    const mockData = [];
+
+    // 生成过去7天的数据
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const count = Math.floor(Math.random() * 8) + 1; // 1-8个番茄
+      for (let j = 0; j < count; j++) {
+        const hours = Math.floor(Math.random() * 12) + 8; // 8点到20点
+        const minutes = Math.floor(Math.random() * 60);
+        date.setHours(hours, minutes, 0, 0);
+        mockData.push({
+          startedAt: date.toISOString(),
+          duration: 25 * 60, // 25分钟
+          type: 'work'
+        });
+      }
+    }
+
+    // 批量插入
+    mockData.forEach(session => {
+      db.run(
+        'INSERT INTO sessions (started_at, duration, type) VALUES (?, ?, ?)',
+        [session.startedAt, session.duration, session.type]
+      );
+    });
+  }, [db]);
+
   return {
     db,
     isLoading,
     error,
     saveSession,
     getTodayStats,
-    getWeekStats
+    getWeekStats,
+    clearAllData,
+    generateMockData
   };
 }
