@@ -28,8 +28,8 @@ function createMainWindow() {
     }
   })
 
-  // 使用本地 HTTP 服务器来服务 dist 文件夹，解决 file:// 协议的路径问题
-  const distPath = path.join(__dirname, '../dist')
+  // 使用绝对路径避免中文路径问题
+  const distPath = path.resolve(__dirname, '..', 'dist')
   server = http.createServer((req, res) => {
     const requestPath = req.url || '/'
     let filePath = path.join(distPath, requestPath === '/' ? 'index.html' : requestPath)
