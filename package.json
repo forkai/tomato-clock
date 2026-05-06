@@ -1,6 +1,7 @@
 {
   "name": "tomato-clock",
   "version": "1.0.0",
+  "type": "module",
   "description": "番茄钟桌面应用",
   "main": "electron/main.js",
   "scripts": {
