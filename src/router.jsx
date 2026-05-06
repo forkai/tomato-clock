@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import TimerPage from '@/App';
-import StatsPage from '@/pages/StatsPage';
+import { StatsPage } from '@/pages/StatsPage';
 
 /**
  * 路由配置

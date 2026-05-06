@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
  */
 export function TimerControls({ isRunning, onStart, onPause, onReset }) {
   return (
-    <div className="flex items-center gap-4 mt-8">
+    <div className="flex items-center gap-4">
       {/* 开始/暂停按钮 */}
       {isRunning ? (
         <Button size="lg" onClick={onPause} className="w-24">

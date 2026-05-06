@@ -15,7 +15,18 @@
       "Bash(npm run *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(npx electron *)"
+      "Bash(npx electron *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(taskkill /F /IM electron.exe)",
+      "Bash(node -e \"console.log\\(require\\('path'\\).join\\(__dirname, '../dist/index.html'\\)\\)\")",
+      "Bash(node -e \"const p = require\\('path'\\); console.log\\(p.join\\('electron', '../dist/index.html'\\)\\)\")",
+      "Bash(curl -s http://localhost:5178/src/main.jsx)",
+      "Bash(npx serve *)",
+      "Bash(curl -s http://localhost:9999)",
+      "Bash(curl -v http://localhost:9999)",
+      "Bash(node -e \"console.log\\('CWD:', process.cwd\\(\\)\\); console.log\\('__dirname would be:', __dirname\\)\")",
+      "Bash(node -e \"console.log\\('__dirname is:', require\\('path'\\).resolve\\('electron'\\)\\)\")"
     ]
   }
 }

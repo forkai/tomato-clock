@@ -44,9 +44,9 @@ function TimerPage() {
   const progress = ((totalDuration - timeRemaining) / totalDuration) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center px-6 py-8">
+    <div className="h-screen bg-background flex flex-col items-center px-6 py-8">
       {/* 顶部导航 */}
-      <div className="w-full flex justify-between items-center mb-4">
+      <div className="w-full flex justify-between items-center mb-4 flex-shrink-0">
         <div className="text-sm text-foreground/60">
           已完成 {sessionsCompleted} 个番茄
         </div>
@@ -61,21 +61,25 @@ function TimerPage() {
         </Link>
       </div>
 
-      {/* 计时器核心 */}
-      <div className="relative">
-        <ProgressRing progress={progress} />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <TimerDisplay timeRemaining={timeRemaining} mode={mode} />
+      {/* 计时器核心 - flex-1 占据剩余空间 */}
+      <div className="flex-1 flex items-center justify-center">
+        <div className="relative">
+          <ProgressRing progress={progress} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <TimerDisplay timeRemaining={timeRemaining} mode={mode} />
+          </div>
         </div>
       </div>
 
-      {/* 控制按钮 */}
-      <TimerControls
-        isRunning={isRunning}
-        onStart={start}
-        onPause={pause}
-        onReset={reset}
-      />
+      {/* 控制按钮 - 固定在底部 */}
+      <div className="flex-shrink-0 pb-2">
+        <TimerControls
+          isRunning={isRunning}
+          onStart={start}
+          onPause={pause}
+          onReset={reset}
+        />
+      </div>
     </div>
   );
 }
