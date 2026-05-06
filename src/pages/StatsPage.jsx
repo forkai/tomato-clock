@@ -30,7 +30,7 @@ export function StatsPage() {
         返回计时器
       </Link>
 
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full gap-3 sm:gap-4">
         {/* 今日统计（含连续专注天数） */}
         <TodayStats stats={todayStats} streakDays={streakDays} />
 
