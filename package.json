@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "番茄钟桌面应用",
-  "main": "electron/main.js",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
