@@ -9,6 +9,7 @@ export function useDatabase() {
   const [db, setDb] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dataVersion, setDataVersion] = useState(0);
 
   // 初始化数据库
   useEffect(() => {
@@ -64,10 +65,11 @@ export function useDatabase() {
       'INSERT INTO sessions (started_at, duration, type) VALUES (?, ?, ?)',
       [startedAt, duration, type]
     );
+    setDataVersion(v => v + 1);
   }, [db]);
 
   // 获取今日统计
-  const getTodayStats = useCallback((refreshKey) => {
+  const getTodayStats = useCallback(() => {
     if (!db) return { count: 0, totalDuration: 0 };
 
     const today = new Date().toISOString().split('T')[0];
@@ -88,7 +90,7 @@ export function useDatabase() {
   }, [db]);
 
   // 获取本周统计
-  const getWeekStats = useCallback((refreshKey) => {
+  const getWeekStats = useCallback(() => {
     if (!db) return [];
 
     const now = new Date();
@@ -113,6 +115,7 @@ export function useDatabase() {
   const clearAllData = useCallback(() => {
     if (!db) return;
     db.run('DELETE FROM sessions');
+    setDataVersion(v => v + 1);
   }, [db]);
 
   // 生成模拟数据（用于测试）
@@ -146,12 +149,14 @@ export function useDatabase() {
         [session.startedAt, session.duration, session.type]
       );
     });
+    setDataVersion(v => v + 1);
   }, [db]);
 
   return {
     db,
     isLoading,
     error,
+    dataVersion,
     saveSession,
     getTodayStats,
     getWeekStats,

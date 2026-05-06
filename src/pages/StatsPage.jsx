@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDatabase } from '@/hooks/useDatabase';
 import { TodayStats } from '@/components/Stats/TodayStats';
@@ -9,13 +9,12 @@ import { WeekStats } from '@/components/Stats/WeekStats';
  * 显示今日统计（包含连续专注天数）、本周趋势
  */
 export function StatsPage() {
-  const { getTodayStats, getWeekStats, clearAllData, generateMockData, isLoading } = useDatabase();
+  const { getTodayStats, getWeekStats, clearAllData, generateMockData, isLoading, dataVersion } = useDatabase();
   const [showConfirm, setShowConfirm] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
 
-  // 数据依赖 refreshKey，每次点击模拟数据或清除数据后刷新
-  const todayStats = getTodayStats(refreshKey);
-  const weekStats = getWeekStats(refreshKey);
+  // 数据依赖 dataVersion，每次点击模拟数据或清除数据后刷新
+  const todayStats = useMemo(() => getTodayStats(), [dataVersion, getTodayStats]);
+  const weekStats = useMemo(() => getWeekStats(), [dataVersion, getWeekStats]);
 
   // 计算连续专注天数（本周有几天完成番茄）
   const streakDays = weekStats.filter(d => d.count > 0).length;
@@ -23,14 +22,12 @@ export function StatsPage() {
   // 生成模拟数据
   const handleGenerateMockData = () => {
     generateMockData();
-    setRefreshKey(k => k + 1);
   };
 
   // 清除数据
   const handleClearData = () => {
     clearAllData();
     setShowConfirm(false);
-    setRefreshKey(k => k + 1);
   };
 
   if (isLoading) {
