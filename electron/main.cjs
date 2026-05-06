@@ -53,21 +53,26 @@ function createMainWindow() {
     }
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    const ports = [5173, 5174, 5175, 5176, 5177];
-    const loadWithRetry = (index) => {
-      if (index >= ports.length) {
-        console.error('Could not connect to Vite dev server');
-        return;
-      }
-      const port = ports[index];
-      mainWindow.loadURL(`http://localhost:${port}`)
-        .catch(() => loadWithRetry(index + 1));
-    };
-    loadWithRetry(0);
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
-  }
+  // 开发环境检测：优先尝试连接 Vite dev server
+  // 由于 Electron 主进程不读取 Vite 的环境变量，我们通过尝试连接来检测
+  const ports = [5173, 5174, 5175, 5176, 5177];
+  const loadWithRetry = (index) => {
+    if (index >= ports.length) {
+      // 所有端口都失败了，加载生产版本
+      console.log('Dev server not available, loading production build');
+      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+      return;
+    }
+    const port = ports[index];
+    console.log(`Trying to connect to Vite dev server at localhost:${port}...`);
+    mainWindow.loadURL(`http://localhost:${port}`)
+      .then(() => console.log(`Connected to Vite dev server at port ${port}`))
+      .catch(() => {
+        console.log(`Port ${port} failed, trying next...`);
+        loadWithRetry(index + 1);
+      });
+  };
+  loadWithRetry(0);
 }
 
 function createNotificationWindow(message) {
