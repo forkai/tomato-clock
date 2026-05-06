@@ -55,7 +55,7 @@ function App() {
   const progress = ((totalDuration - timeRemaining) / totalDuration) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center px-6 py-8">
+    <div className="min-h-screen bg-background flex flex-col items-center px-6 py-8 overflow-hidden">
       {/* 顶部进度指示 */}
       <div className="text-sm text-foreground/60 mb-4">
         已完成 {sessionsCompleted} 个番茄
