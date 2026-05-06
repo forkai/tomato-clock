@@ -20,7 +20,18 @@ function createMainWindow() {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:5173');
+    // 尝试多个端口，因为 Vite 可能使用不同端口
+    const ports = [5173, 5174, 5175, 5176, 5177];
+    const loadWithRetry = (index) => {
+      if (index >= ports.length) {
+        console.error('Could not connect to Vite dev server');
+        return;
+      }
+      const port = ports[index];
+      mainWindow.loadURL(`http://localhost:${port}`)
+        .catch(() => loadWithRetry(index + 1));
+    };
+    loadWithRetry(0);
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
