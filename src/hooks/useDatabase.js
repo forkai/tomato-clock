@@ -67,7 +67,7 @@ export function useDatabase() {
   }, [db]);
 
   // 获取今日统计
-  const getTodayStats = useCallback(() => {
+  const getTodayStats = useCallback((refreshKey) => {
     if (!db) return { count: 0, totalDuration: 0 };
 
     const today = new Date().toISOString().split('T')[0];
@@ -88,7 +88,7 @@ export function useDatabase() {
   }, [db]);
 
   // 获取本周统计
-  const getWeekStats = useCallback(() => {
+  const getWeekStats = useCallback((refreshKey) => {
     if (!db) return [];
 
     const now = new Date();

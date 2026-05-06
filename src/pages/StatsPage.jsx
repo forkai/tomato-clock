@@ -9,22 +9,37 @@ import { WeekStats } from '@/components/Stats/WeekStats';
  * 显示今日统计（包含连续专注天数）、本周趋势
  */
 export function StatsPage() {
-  const { getTodayStats, getWeekStats, clearAllData, generateMockData } = useDatabase();
+  const { getTodayStats, getWeekStats, clearAllData, generateMockData, isLoading } = useDatabase();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const todayStats = getTodayStats(0);
-  const weekStats = getWeekStats(0);
+  // 数据依赖 refreshKey，每次点击模拟数据或清除数据后刷新
+  const todayStats = getTodayStats(refreshKey);
+  const weekStats = getWeekStats(refreshKey);
 
   // 计算连续专注天数（本周有几天完成番茄）
   const streakDays = weekStats.filter(d => d.count > 0).length;
+
+  // 生成模拟数据
+  const handleGenerateMockData = () => {
+    generateMockData();
+    setRefreshKey(k => k + 1);
+  };
 
   // 清除数据
   const handleClearData = () => {
     clearAllData();
     setShowConfirm(false);
-    // 刷新页面以更新显示
-    window.location.reload();
+    setRefreshKey(k => k + 1);
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-background flex items-center justify-center">
+        <span className="text-foreground/60">加载中...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
@@ -43,7 +58,7 @@ export function StatsPage() {
         <div className="flex gap-2">
           {/* 模拟数据按钮 */}
           <button
-            onClick={() => generateMockData() || window.location.reload()}
+            onClick={handleGenerateMockData}
             className="text-xs text-foreground/60 hover:text-foreground px-2 py-1 rounded hover:bg-secondary/50 transition-colors"
           >
             模拟数据
