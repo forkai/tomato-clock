@@ -18,11 +18,11 @@ export function StatsPage() {
   const streakDays = weekStats.filter(d => d.count > 0).length;
 
   return (
-    <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 overflow-y-auto">
+    <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
       {/* 返回按钮 */}
       <Link
         to="/"
-        className="inline-flex items-center text-sm text-foreground/60 hover:text-foreground mb-4 sm:mb-6"
+        className="inline-flex items-center text-sm text-foreground/60 hover:text-foreground mb-3 sm:mb-4 flex-shrink-0"
       >
         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -30,7 +30,7 @@ export function StatsPage() {
         返回计时器
       </Link>
 
-      <div className="flex flex-col h-full gap-3 sm:gap-4">
+      <div className="flex flex-col flex-1 min-h-0 gap-3 sm:gap-4 overflow-hidden">
         {/* 今日统计（含连续专注天数） */}
         <TodayStats stats={todayStats} streakDays={streakDays} />
 
