@@ -1,28 +1,36 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 /**
- * 简易柱状图组件
- * 本周趋势展示，响应式适配，高度自动填满容器
+ * 进度条列表 - 本周趋势展示
+ * 数值清晰，小数值也能良好展示
  */
 export function TrendChart({ data }) {
   const maxCount = Math.max(...data.map(d => d.count), 1);
 
+  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+
   return (
-    <div className="flex items-end gap-1 sm:gap-2 h-full">
+    <div className="space-y-2 sm:space-y-3">
       {data.map((item, index) => {
-        const height = (item.count / maxCount) * 100;
+        const heightPercent = (item.count / maxCount) * 100;
+        const dayName = dayNames[new Date(item.date).getDay()];
+
         return (
-          <div key={index} className="flex-1 flex flex-col items-center gap-1">
-            <div className="w-full bg-secondary rounded-t h-full min-h-[4px] relative">
+          <div key={index} className="flex items-center gap-2 sm:gap-3">
+            {/* 日期 */}
+            <span className="w-4 text-xs text-foreground/60 text-center">{dayName}</span>
+
+            {/* 进度条 */}
+            <div className="flex-1 h-3 sm:h-4 bg-secondary rounded-full overflow-hidden">
               <div
-                className="absolute bottom-0 w-full bg-primary rounded-t transition-all"
-                style={{ height: `${height}%` }}
+                className="h-full bg-primary rounded-full transition-all duration-300"
+                style={{ width: `${heightPercent}%` }}
               />
             </div>
-            <span className="text-xs text-foreground/60">
-              {new Date(item.date).getDay() === 0 ? '日' :
-                ['一', '二', '三', '四', '五', '六'][new Date(item.date).getDay() - 1]}
+
+            {/* 数值 */}
+            <span className="w-6 sm:w-8 text-xs sm:text-sm text-foreground/80 text-right font-medium">
+              {item.count}
             </span>
           </div>
         );
