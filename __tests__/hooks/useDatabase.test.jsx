@@ -96,7 +96,7 @@ describe('useDatabase logic', () => {
     it('should not count break sessions', () => {
       const today = new Date().toISOString();
       db.saveSession(today, 1500, 'work');
-      db.saveSession(today, 300, 'short_break');
+      db.saveSession(today, 300, 'shortBreak');
 
       const stats = db.getTodayStats();
       expect(stats.count).toBe(1);
@@ -137,7 +137,6 @@ describe('useDatabase logic', () => {
 
 describe('Mock data generation', () => {
   it('should generate 7 days of data', () => {
-    const db = new (require('./useDatabase.test.jsx').MemoryDatabase || class {})();
     // 直接模拟生成逻辑
     const now = new Date();
     const mockData = [];

@@ -13,12 +13,12 @@ describe('SessionRecordSchema', () => {
     expect(SessionRecordSchema.parse(valid)).toEqual(valid)
   })
 
-  it('should accept break type', () => {
+  it('should accept shortBreak type', () => {
     const valid = {
       id: '550e8400-e29b-41d4-a716-446655440000',
       date: '2024-01-15T00:00:00.000Z',
       duration: 300,
-      type: 'break',
+      type: 'shortBreak',
       completedAt: 1705312800000
     }
     expect(SessionRecordSchema.parse(valid)).toEqual(valid)

@@ -6,8 +6,8 @@ describe('SessionTypeSchema', () => {
     expect(SessionTypeSchema.parse('work')).toBe('work')
   })
 
-  it('should accept "break"', () => {
-    expect(SessionTypeSchema.parse('break')).toBe('break')
+  it('should accept "shortBreak"', () => {
+    expect(SessionTypeSchema.parse('shortBreak')).toBe('shortBreak')
   })
 
   it('should accept "longBreak"', () => {
@@ -45,7 +45,7 @@ describe('TimerStateSchema', () => {
   it('should accept paused status', () => {
     const valid = {
       status: 'paused',
-      sessionType: 'break',
+      sessionType: 'shortBreak',
       timeRemaining: 300,
       sessionsCompleted: 2
     }

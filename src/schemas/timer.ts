@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const SessionTypeSchema = z.enum(['work', 'break', 'longBreak'])
+export const SessionTypeSchema = z.enum(['work', 'shortBreak', 'longBreak'])
 
 export const TimerStatusSchema = z.enum(['idle', 'running', 'paused'])
 

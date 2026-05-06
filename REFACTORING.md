@@ -347,5 +347,4 @@ npm run electron:build
 2. 使用 `vitest` globals 替代显式导入
 3. 迁移到 `rolldownOptions` 替代 `esbuildOptions`
 4. 添加更多 Zod Schema 验证
-5. 考虑使用 shadcn/ui 组件库
-6. 等待 vite-plus 原生支持 electron 插件
+5. 等待 vite-plus 原生支持 electron 插件
