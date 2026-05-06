@@ -30,7 +30,9 @@
       "Bash(npm test *)",
       "Bash(npx playwright *)",
       "Bash(npm list *)",
-      "Bash(node scripts/generate-icon.js)"
+      "Bash(node scripts/generate-icon.js)",
+      "Bash(file build/icon.png)",
+      "Bash(identify build/icon.png)"
     ]
   }
 }

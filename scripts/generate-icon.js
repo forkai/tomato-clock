@@ -4,10 +4,12 @@ import path from 'path';
 const svgPath = './build/icon.svg';
 const pngPath = './build/icon.png';
 
-// 256x256 for electron-builder
+// Generate 256x256 icon - Windows uses this size for taskbar
 sharp(svgPath)
   .resize(256, 256)
-  .png()
+  .png({
+    density: 96
+  })
   .toFile(pngPath)
   .then(() => {
     console.log('Icon created at build/icon.png (256x256)');
