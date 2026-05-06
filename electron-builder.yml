@@ -1,0 +1,19 @@
+appId: com.tomato.clock
+productName: 番茄钟
+directories:
+  buildResources: build
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+mac:
+  target:
+    - dmg
+linux:
+  target:
+    - AppImage

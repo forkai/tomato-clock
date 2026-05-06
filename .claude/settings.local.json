@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(gsd-update)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npm create *)",
+      "Bash(npx create-electron-vite@latest pomodoro-desk --template react-ts)",
+      "Bash(npx create-electron-vite@latest)",
+      "Bash(npm install *)",
+      "Bash(grep -E \"^react$|^react-dom$|^vite$|^typescript$\")",
+      "Bash(npm view *)",
+      "Bash(mv /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk-bak)",
+      "Bash(mkdir -p /c/Users/abcuc/.claude/projects/C-----Code-projects/pomodoro-desk)",
+      "Bash(npm init *)"
+    ]
+  }
+}
