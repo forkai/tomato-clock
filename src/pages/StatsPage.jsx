@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDatabase } from '@/hooks/useDatabase';
 import { TodayStats } from '@/components/Stats/TodayStats';
@@ -11,13 +11,15 @@ import { WeekStats } from '@/components/Stats/WeekStats';
 export function StatsPage() {
   const { getTodayStats, getWeekStats, clearAllData, generateMockData, isLoading, dataVersion } = useDatabase();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [stats, setStats] = useState({ todayStats: { count: 0, totalDuration: 0 }, weekStats: [], streakDays: 0 });
 
-  // 数据依赖 dataVersion，每次点击模拟数据或清除数据后刷新
-  const todayStats = useMemo(() => getTodayStats(), [dataVersion, getTodayStats]);
-  const weekStats = useMemo(() => getWeekStats(), [dataVersion, getWeekStats]);
-
-  // 计算连续专注天数（本周有几天完成番茄）
-  const streakDays = weekStats.filter(d => d.count > 0).length;
+  // 每次 dataVersion 变化时重新获取统计数据
+  useEffect(() => {
+    const today = getTodayStats();
+    const week = getWeekStats();
+    const streak = week.filter(d => d.count > 0).length;
+    setStats({ todayStats: today, weekStats: week, streakDays: streak });
+  }, [dataVersion, getTodayStats, getWeekStats]);
 
   // 生成模拟数据
   const handleGenerateMockData = () => {
@@ -73,10 +75,10 @@ export function StatsPage() {
 
       <div className="flex flex-col flex-1 min-h-0 gap-3 sm:gap-4 overflow-hidden">
         {/* 今日统计（含连续专注天数） */}
-        <TodayStats stats={todayStats} streakDays={streakDays} />
+        <TodayStats stats={stats.todayStats} streakDays={stats.streakDays} />
 
         {/* 本周趋势 - 占满剩余高度 */}
-        <WeekStats stats={weekStats} />
+        <WeekStats stats={stats.weekStats} />
       </div>
 
       {/* 确认弹框 */}
