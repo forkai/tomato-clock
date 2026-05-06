@@ -31,7 +31,8 @@ function createMainWindow() {
   // 使用本地 HTTP 服务器来服务 dist 文件夹，解决 file:// 协议的路径问题
   const distPath = path.join(__dirname, '../dist')
   server = http.createServer((req, res) => {
-    let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url)
+    const requestPath = req.url || '/'
+    let filePath = path.join(distPath, requestPath === '/' ? 'index.html' : requestPath)
     const ext = path.extname(filePath)
     const contentTypes: Record<string, string> = {
       '.html': 'text/html',
