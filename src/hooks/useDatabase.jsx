@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import initSqlJs from 'sql.js';
 
+// 创建 Database Context
+const DatabaseContext = createContext(null);
+
 /**
- * 数据库 Hook
- * 封装 sql.js 的初始化和基本操作
+ * Database Provider - 在应用顶层共享数据库实例
  */
-export function useDatabase() {
+export function DatabaseProvider({ children }) {
   const [db, setDb] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,13 +49,6 @@ export function useDatabase() {
     }
 
     initDB();
-
-    // 清理
-    return () => {
-      if (db) {
-        db.close();
-      }
-    };
   }, []);
 
   // 保存番茄会话
@@ -152,7 +147,7 @@ export function useDatabase() {
     setDataVersion(v => v + 1);
   }, [db]);
 
-  return {
+  const value = {
     db,
     isLoading,
     error,
@@ -163,4 +158,22 @@ export function useDatabase() {
     clearAllData,
     generateMockData
   };
+
+  return (
+    <DatabaseContext.Provider value={value}>
+      {children}
+    </DatabaseContext.Provider>
+  );
+}
+
+/**
+ * 数据库 Hook
+ * 使用 Context 共享同一个数据库实例
+ */
+export function useDatabase() {
+  const context = useContext(DatabaseContext);
+  if (!context) {
+    throw new Error('useDatabase must be used within a DatabaseProvider');
+  }
+  return context;
 }

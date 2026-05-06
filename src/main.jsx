@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AppRouter } from './router';
+import { DatabaseProvider } from './hooks/useDatabase';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AppRouter />
+    <DatabaseProvider>
+      <AppRouter />
+    </DatabaseProvider>
   </React.StrictMode>
 );
