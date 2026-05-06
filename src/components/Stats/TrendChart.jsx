@@ -7,18 +7,21 @@ import React from 'react';
 export function TrendChart({ data }) {
   const maxCount = Math.max(...data.map(d => d.count), 1);
 
-  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  const dayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
   return (
     <div className="space-y-2 sm:space-y-3">
       {data.map((item, index) => {
         const heightPercent = (item.count / maxCount) * 100;
         const dayName = dayNames[new Date(item.date).getDay()];
+        // 格式化日期显示 M/D
+        const [month, day] = item.date.split('-').slice(1);
+        const dateStr = `${parseInt(month)}/${parseInt(day)}`;
 
         return (
           <div key={index} className="flex items-center gap-2 sm:gap-3">
             {/* 日期 */}
-            <span className="w-4 text-xs text-foreground/60 text-center">{dayName}</span>
+            <span className="w-8 sm:w-10 text-xs text-foreground/60 text-right">{dateStr}</span>
 
             {/* 进度条 */}
             <div className="flex-1 h-3 sm:h-4 bg-secondary rounded-full overflow-hidden">

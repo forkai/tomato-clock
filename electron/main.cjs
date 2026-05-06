@@ -182,8 +182,20 @@ ipcMain.handle('db-get-week-stats', () => {
     const now = new Date();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay() + 1);
-    const weekStart = startOfWeek.toISOString().split('T')[0];
 
+    // 构建本周7天的完整数据
+    const weekData = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      weekData.push({
+        date: date.toISOString().split('T')[0],
+        count: 0
+      });
+    }
+
+    // 从数据库查询实际数据
+    const weekStart = startOfWeek.toISOString().split('T')[0];
     const result = db.exec(`
       SELECT DATE(started_at) as date, COUNT(*) as count
       FROM sessions
@@ -192,9 +204,17 @@ ipcMain.handle('db-get-week-stats', () => {
       ORDER BY date
     `);
 
-    if (result.length === 0) return [];
+    // 填充实际数据
+    if (result.length > 0) {
+      result[0].values.forEach(([date, count]) => {
+        const dayIndex = weekData.findIndex(d => d.date === date);
+        if (dayIndex !== -1) {
+          weekData[dayIndex].count = count;
+        }
+      });
+    }
 
-    return result[0].values.map(([date, count]) => ({ date, count }));
+    return weekData;
   } catch (err) {
     console.error('Error getting week stats:', err);
     return [];
