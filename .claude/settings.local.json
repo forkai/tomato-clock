@@ -26,7 +26,8 @@
       "Bash(curl -s http://localhost:9999)",
       "Bash(curl -v http://localhost:9999)",
       "Bash(node -e \"console.log\\('CWD:', process.cwd\\(\\)\\); console.log\\('__dirname would be:', __dirname\\)\")",
-      "Bash(node -e \"console.log\\('__dirname is:', require\\('path'\\).resolve\\('electron'\\)\\)\")"
+      "Bash(node -e \"console.log\\('__dirname is:', require\\('path'\\).resolve\\('electron'\\)\\)\")",
+      "Bash(npm test *)"
     ]
   }
 }
