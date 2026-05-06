@@ -66,7 +66,7 @@ function TimerPage() {
         <div className="relative">
           <ProgressRing progress={progress} />
           <div className="absolute inset-0 flex items-center justify-center">
-            <TimerDisplay timeRemaining={timeRemaining} mode={mode} />
+            <TimerDisplay timeRemaining={timeRemaining} mode={mode} isRunning={isRunning} />
           </div>
         </div>
       </div>
