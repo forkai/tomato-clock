@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDatabase } from '@/hooks/useDatabase';
 import { TodayStats } from '@/components/Stats/TodayStats';
 import { WeekStats } from '@/components/Stats/WeekStats';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 /**
  * 统计页面
@@ -77,28 +78,13 @@ export function StatsPage() {
       </div>
 
       {/* 确认弹框 */}
-      {showConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-secondary p-6 rounded-lg max-w-sm mx-4">
-            <h3 className="text-lg font-semibold mb-2">确认清除</h3>
-            <p className="text-foreground/60 mb-4">确定要清除所有统计数据吗？此操作不可恢复。</p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 text-sm text-foreground/60 hover:text-foreground transition-colors"
-              >
-                取消
-              </button>
-              <button
-                onClick={handleClearData}
-                className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-              >
-                确认清除
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        isOpen={showConfirm}
+        title="确认清除"
+        message="确定要清除所有统计数据吗？此操作不可恢复。"
+        onConfirm={handleClearData}
+        onCancel={() => setShowConfirm(false)}
+      />
     </div>
   );
 }
