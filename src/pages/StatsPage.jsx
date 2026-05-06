@@ -9,36 +9,31 @@ import { WeekStats } from '@/components/Stats/WeekStats';
  * 显示今日统计（包含连续专注天数）、本周趋势
  */
 export function StatsPage() {
-  const { getTodayStats, getWeekStats, clearAllData, generateMockData, isLoading, dataVersion } = useDatabase();
+  const { getTodayStats, getWeekStats, clearAllData, generateMockData, dataVersion } = useDatabase();
   const [showConfirm, setShowConfirm] = useState(false);
   const [stats, setStats] = useState({ todayStats: { count: 0, totalDuration: 0 }, weekStats: [], streakDays: 0 });
 
   // 每次 dataVersion 变化时重新获取统计数据
   useEffect(() => {
-    const today = getTodayStats();
-    const week = getWeekStats();
-    const streak = week.filter(d => d.count > 0).length;
-    setStats({ todayStats: today, weekStats: week, streakDays: streak });
+    async function fetchStats() {
+      const today = await getTodayStats();
+      const week = await getWeekStats();
+      const streak = week.filter(d => d.count > 0).length;
+      setStats({ todayStats: today, weekStats: week, streakDays: streak });
+    }
+    fetchStats();
   }, [dataVersion, getTodayStats, getWeekStats]);
 
   // 生成模拟数据
-  const handleGenerateMockData = () => {
-    generateMockData();
+  const handleGenerateMockData = async () => {
+    await generateMockData();
   };
 
   // 清除数据
-  const handleClearData = () => {
-    clearAllData();
+  const handleClearData = async () => {
+    await clearAllData();
     setShowConfirm(false);
   };
-
-  if (isLoading) {
-    return (
-      <div className="h-screen bg-background flex items-center justify-center">
-        <span className="text-foreground/60">加载中...</span>
-      </div>
-    );
-  }
 
   return (
     <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
