@@ -14,7 +14,7 @@ export function TimerDisplay({ timeRemaining, mode }) {
       <span className={cn('text-sm font-medium uppercase tracking-wider mb-2', color)}>
         {label}
       </span>
-      <span className="text-7xl font-bold text-foreground tabular-nums">
+      <span className="text-5xl font-bold text-foreground tabular-nums">
         {formatTime(timeRemaining)}
       </span>
     </div>

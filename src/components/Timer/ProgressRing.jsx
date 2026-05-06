@@ -7,34 +7,34 @@ import { cn } from '@/lib/utils';
  * @param {string} className - 自定义类名
  */
 export function ProgressRing({ progress, className }) {
-  const radius = 90;
+  const radius = 120;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
     <svg
-      width="200"
-      height="200"
-      viewBox="0 0 200 200"
+      width="280"
+      height="280"
+      viewBox="0 0 280 280"
       className={cn('transform -rotate-90', className)}
     >
       {/* 背景圆环 */}
       <circle
-        cx="100"
-        cy="100"
+        cx="140"
+        cy="140"
         r={radius}
         fill="none"
         stroke="hsl(217, 33%, 17%)"
-        strokeWidth="8"
+        strokeWidth="14"
       />
       {/* 进度圆环 */}
       <circle
-        cx="100"
-        cy="100"
+        cx="140"
+        cy="140"
         r={radius}
         fill="none"
         stroke="hsl(4, 90%, 58%)"
-        strokeWidth="8"
+        strokeWidth="14"
         strokeLinecap="round"
         strokeDasharray={circumference}
         strokeDashoffset={strokeDashoffset}
