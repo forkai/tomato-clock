@@ -28,7 +28,9 @@
       "Bash(node -e \"console.log\\('CWD:', process.cwd\\(\\)\\); console.log\\('__dirname would be:', __dirname\\)\")",
       "Bash(node -e \"console.log\\('__dirname is:', require\\('path'\\).resolve\\('electron'\\)\\)\")",
       "Bash(npm test *)",
-      "Bash(npx playwright *)"
+      "Bash(npx playwright *)",
+      "Bash(npm list *)",
+      "Bash(node scripts/generate-icon.js)"
     ]
   }
 }
