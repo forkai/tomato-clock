@@ -233,9 +233,9 @@ Electron 启动后显示黑屏，无法看到应用内容。
 import http from 'http'
 import path from 'path'
 
-const distPath = path.join(__dirname, '../dist')
+const distPath = path.resolve(__dirname, '..', 'dist')
 const server = http.createServer((req, res) => {
-  let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url)
+  let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url.replace(/^\//, ''))
   // 设置正确的 Content-Type
   const contentTypes: Record<string, string> = {
     '.html': 'text/html',
@@ -258,6 +258,47 @@ server.listen(3847, '127.0.0.1', () => {
 - HTTP 服务器不存在文件协议的路劲解析问题
 - 绝对路径 `/assets/...` 在 HTTP 协议下正确解析为 `http://localhost:3847/assets/...`
 - 本地服务器端口 3847 是任意选择的无冲突端口
+
+### HTTP 服务器返回 "Not found"
+
+**问题描述：**
+ Electron 启动后窗口显示 "Not found"，本地 HTTP 服务器无法正确提供 dist 文件。
+
+**排查过程：**
+1. 添加日志后发现文件路径正确，但读取失败
+2. 错误信息：`Dynamic require of "fs" is not supported`
+3. 确认是 esbuild 打包 ESM 时对 `require` 的包装导致
+
+**根本原因：**
+esbuild 在打包 ESM 格式的 `main.ts` 时，会将代码中的 `require('fs')` 包装成动态 require 代理函数。但这在 Electron 主进程中无法正确加载 Node.js 内置模块，因为内置模块不在 Node.js 的模块缓存中。
+
+**解决方案：**
+使用 `createRequire` 创建符合 ESM 规范的 require 函数：
+
+```typescript
+// electron/main.ts
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
+```
+
+同时在构建脚本中将 `fs` 标记为 external：
+
+```javascript
+// scripts/build-electron.mjs
+await esbuild.build({
+  entryPoints: ['electron/main.ts'],
+  bundle: true,
+  platform: 'node',
+  outfile: 'dist-electron/main.js',
+  external: ['electron', 'sql.js', 'fs'],  // 添加 fs
+  format: 'esm',
+  target: 'node18'
+})
+```
+
+**为什么 path.join 在 Windows 上需要特殊处理：**
+请求路径 `/assets/index.js` 中的前导 `/` 在 Windows 上会被 `path.join` 当作绝对路径处理，导致路径拼接错误。使用 `requestPath.replace(/^\//, '')` 去掉前导斜杠可以解决这个问题。
 
 ### Electron 启动流程
 
