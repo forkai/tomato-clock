@@ -1,15 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-background: #030712;
+  --color-foreground: #ffffff;
+  --color-primary: #dc2626;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #ffffff;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-card: #1e293b;
+  --color-card-foreground: #ffffff;
+  --radius: 0.5rem;
+}
 
 html, body, #root {
-  @apply bg-background text-foreground;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   overflow: hidden;
   height: 100%;
   width: 100%;
 }
 
-/* 隐藏所有滚动条 */
 ::-webkit-scrollbar {
   display: none !important;
 }
