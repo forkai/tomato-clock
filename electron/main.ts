@@ -1,8 +1,12 @@
 import { app, BrowserWindow, Notification, ipcMain, screen } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 import http from 'http'
 import { Database } from './database'
+
+// 用于加载 Node.js 内置模块（esbuild 打包后 require 被包装，需要用 createRequire）
+const require = createRequire(import.meta.url)
 
 // ESM 模块中手动定义 __dirname（ESM 没有这个变量）
 const __filename = fileURLToPath(import.meta.url)
@@ -50,7 +54,11 @@ function createMainWindow() {
     const requestPath = req.url || '/'
 
     // 根据请求路径拼接实际文件路径
-    let filePath = path.join(distPath, requestPath === '/' ? 'index.html' : requestPath)
+    // 注意：在 Windows 上 path.join 会把以 / 开头的路径当作绝对路径处理
+    // 所以需要把请求路径的前导 / 去掉
+    let filePath = path.join(distPath, requestPath === '/' ? 'index.html' : requestPath.replace(/^\//, ''))
+    console.log(`[HTTP] ${requestPath} -> ${filePath}`)
+
     const ext = path.extname(filePath)
 
     // MIME 类型映射，确保浏览器正确解析资源
@@ -69,6 +77,8 @@ function createMainWindow() {
       res.end(content)
     } catch (e) {
       // 文件不存在时返回 404
+      const err = e as Error
+      console.log(`[HTTP] 404: ${filePath} - ${err.message}`)
       res.statusCode = 404
       res.end('Not found')
     }
