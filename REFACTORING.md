@@ -223,30 +223,49 @@ Electron 启动后显示黑屏，无法看到应用内容。
 <script type="module" crossorigin src="/assets/index-bupkmi9t.js"></script>
 ```
 
-当使用 `loadFile()` 加载时，这些绝对路径无法正确解析。
+当使用 `loadFile()` 加载时，这些绝对路径无法正确解析。即使使用 `file://` 协议，绝对路径 `/assets/...` 也会从文件系统根目录开始查找，而不是相对于 HTML 文件的位置。
 
-**解决方案：**
-使用 `loadURL()` 替代 `loadFile()`，并通过 `file://` 协议加载：
+**最终解决方案：**
+使用本地 HTTP 服务器来服务 dist 文件夹：
 
 ```typescript
 // electron/main.ts
-const prodPath = path.join(__dirname, '../dist/index.html')
-const fileUrl = `file://${prodPath.replace(/\\/g, '/')}`
-mainWindow.loadURL(fileUrl)
+import http from 'http'
+import path from 'path'
+
+const distPath = path.join(__dirname, '../dist')
+const server = http.createServer((req, res) => {
+  let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url)
+  // 设置正确的 Content-Type
+  const contentTypes: Record<string, string> = {
+    '.html': 'text/html',
+    '.js': 'application/javascript',
+    '.css': 'text/css',
+    '.svg': 'image/svg+xml'
+  }
+  res.setHeader('Content-Type', contentTypes[ext] || 'text/plain')
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  const content = require('fs').readFileSync(filePath)
+  res.end(content)
+})
+
+server.listen(3847, '127.0.0.1', () => {
+  mainWindow.loadURL('http://127.0.0.1:3847')
+})
 ```
 
-**为什么 loadFile() 不工作：**
-- `loadFile()` 用于加载本地文件，但不支持协议
-- 绝对路径 `/assets/...` 在 file:// 协议下无法正确解析
-- `loadURL()` 支持 file:// 协议，能够正确处理绝对路径
+**为什么这个方案有效：**
+- HTTP 服务器不存在文件协议的路劲解析问题
+- 绝对路径 `/assets/...` 在 HTTP 协议下正确解析为 `http://localhost:3847/assets/...`
+- 本地服务器端口 3847 是任意选择的无冲突端口
 
 ### Electron 启动流程
 
 1. `app.whenReady()` 触发
 2. 初始化 sql.js 数据库
-3. 创建 BrowserWindow
-4. 通过 `file://` 协议加载 `dist/index.html`
-5. React 应用在浏览器中渲染
+3. 创建本地 HTTP 服务器监听 3847 端口
+4. 创建 BrowserWindow 并加载 `http://127.0.0.1:3847`
+5. React 应用通过 HTTP 协议加载资源并渲染
 
 ## 验证命令
 

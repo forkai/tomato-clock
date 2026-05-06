@@ -2,6 +2,7 @@ import { app, BrowserWindow, Notification, ipcMain, screen } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Database } from './database'
+import http from 'http'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -9,6 +10,7 @@ const __dirname = path.dirname(__filename)
 let mainWindow: BrowserWindow | null = null
 let notificationWindow: BrowserWindow | null = null
 const db = new Database()
+let server: http.Server | null = null
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -26,15 +28,34 @@ function createMainWindow() {
     }
   })
 
-  // 使用 file:// URL 让相对路径能正确解析
-  const prodPath = path.join(__dirname, '../dist/index.html')
-  const fileUrl = `file://${prodPath.replace(/\\/g, '/')}`
-  console.log('Loading via file URL:', fileUrl)
-  mainWindow.loadURL(fileUrl)
-    .then(() => console.log('Production build loaded successfully'))
-    .catch(err => {
-      console.error('Failed to load production build:', err)
-    })
+  // 使用本地 HTTP 服务器来服务 dist 文件夹，解决 file:// 协议的路径问题
+  const distPath = path.join(__dirname, '../dist')
+  server = http.createServer((req, res) => {
+    let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url)
+    const ext = path.extname(filePath)
+    const contentTypes: Record<string, string> = {
+      '.html': 'text/html',
+      '.js': 'application/javascript',
+      '.css': 'text/css',
+      '.svg': 'image/svg+xml'
+    }
+    res.setHeader('Content-Type', contentTypes[ext] || 'text/plain')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    try {
+      const content = require('fs').readFileSync(filePath)
+      res.end(content)
+    } catch (e) {
+      res.statusCode = 404
+      res.end('Not found')
+    }
+  })
+
+  server.listen(3847, '127.0.0.1', () => {
+    console.log('Local server running on http://127.0.0.1:3847')
+    mainWindow?.loadURL('http://127.0.0.1:3847')
+      .then(() => console.log('Production build loaded successfully'))
+      .catch(err => console.error('Failed to load:', err))
+  })
 }
 
 function createNotificationWindow(message: string) {
@@ -80,6 +101,7 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
+  if (server) server.close()
   if (process.platform !== 'darwin') {
     app.quit()
   }
