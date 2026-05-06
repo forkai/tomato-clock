@@ -30,11 +30,11 @@ export function StatsPage() {
         返回计时器
       </Link>
 
-      <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col h-full">
         {/* 今日统计（含连续专注天数） */}
         <TodayStats stats={todayStats} streakDays={streakDays} />
 
-        {/* 本周趋势 */}
+        {/* 本周趋势 - 占满剩余高度 */}
         <WeekStats stats={weekStats} />
       </div>
     </div>

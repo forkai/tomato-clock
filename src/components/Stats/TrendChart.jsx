@@ -3,12 +3,13 @@ import { cn } from '@/lib/utils';
 
 /**
  * 简易柱状图组件
+ * 本周趋势展示，响应式适配，高度自动填满容器
  */
 export function TrendChart({ data }) {
   const maxCount = Math.max(...data.map(d => d.count), 1);
 
   return (
-    <div className="flex items-end gap-2 h-24">
+    <div className="flex items-end gap-1 sm:gap-2 h-full">
       {data.map((item, index) => {
         const height = (item.count / maxCount) * 100;
         return (
