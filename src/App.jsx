@@ -13,16 +13,23 @@ function App() {
   const { notifyPomodoroComplete } = useNotification();
   const { saveSession, getTodayStats, getWeekStats } = useDatabase();
 
+  // 统计数据刷新机制
+  const [refreshKey, setRefreshKey] = useState(0);
+  const refreshStats = useCallback(() => {
+    setRefreshKey(k => k + 1);
+  }, []);
+
   // 番茄完成回调
-  const handlePomodoroComplete = useCallback((mode) => {
+  const handlePomodoroComplete = useCallback((mode, actualDuration) => {
     // 发送通知
     notifyPomodoroComplete(mode);
 
     // 保存到数据库
     if (mode === SESSION_TYPE.WORK) {
-      saveSession(POMODORO_CONFIG.WORK_DURATION, mode);
+      saveSession(actualDuration || POMODORO_CONFIG.WORK_DURATION, mode);
+      refreshStats();
     }
-  }, [notifyPomodoroComplete, saveSession]);
+  }, [notifyPomodoroComplete, saveSession, refreshStats]);
 
   const {
     mode,
@@ -35,8 +42,8 @@ function App() {
   } = useTimer(handlePomodoroComplete);
 
   // 获取统计数据
-  const todayStats = getTodayStats();
-  const weekStats = getWeekStats();
+  const todayStats = getTodayStats(refreshKey);
+  const weekStats = getWeekStats(refreshKey);
 
   // 计算进度
   const totalDuration = {
