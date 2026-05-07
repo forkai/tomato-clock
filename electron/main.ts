@@ -26,6 +26,14 @@ const db = new Database(path.join(app.getPath('userData'), 'tomato-clock.db'))
 // 本地 HTTP 服务器实例（用于解决 file:// 协议的中文路径问题）
 let server: http.Server | null = null
 
+// 获取应用图标路径（兼容开发和打包模式）
+function getIconPath(): string {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'build', 'icon.png')
+  }
+  return path.join(__dirname, '..', 'build', 'icon.png')
+}
+
 /**
  * 创建主窗口
  * 番茄钟应用的主界面窗口，固定 400x600 大小
@@ -38,7 +46,7 @@ function createMainWindow() {
     minHeight: 500,    // 最小高度确保计时器显示完整
     backgroundColor: '#030712', // 深色背景与主题一致
     autoHideMenuBar: true,       // 隐藏菜单栏（快捷键不受影响）
-    icon: path.join(__dirname, '../build/icon.png'),
+    icon: getIconPath(),
     skipTaskbar: true,           // 隐藏任务栏图标
     show: false,                  // 启动时隐藏，等待 ready-to-show 再显示
     webPreferences: {
@@ -158,7 +166,7 @@ function createNotificationWindow(message: string) {
  * 用于在 Windows 通知区域显示应用图标，提供快速访问菜单
  */
 function createTray() {
-  const iconPath = path.join(__dirname, '../build/icon.png')
+  const iconPath = getIconPath()
   const icon = nativeImage.createFromPath(iconPath)
 
   tray = new Tray(icon.resize({ width: 16, height: 16 }))

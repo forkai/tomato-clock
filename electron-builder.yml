@@ -5,6 +5,7 @@ directories:
 files:
   - dist/**/*
   - dist-electron/*.js
+  - build/**/*
   - package.json
 asar: true
 win:
