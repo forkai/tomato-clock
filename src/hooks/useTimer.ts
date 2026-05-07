@@ -83,19 +83,20 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
       onCompleteRef.current(mode)
     }
 
-    // 更新完成计数
+    // 更新完成计数（使用函数式更新避免闭包问题）
     if (mode === (SESSION_TYPE.WORK as SessionType)) {
-      const newSessionsCompleted = sessionsCompleted + 1
-      setSessionsCompleted(newSessionsCompleted)
-
-      // 每 4 个工作会话后切换到长休息，否则切换到短休息
-      if (newSessionsCompleted % POMODORO_CONFIG.SESSIONS_BEFORE_LONG_BREAK === 0) {
-        setMode(SESSION_TYPE.LONG_BREAK as SessionType)
-        setTimeRemaining(POMODORO_CONFIG.LONG_BREAK_DURATION)
-      } else {
-        setMode(SESSION_TYPE.SHORT_BREAK as SessionType)
-        setTimeRemaining(POMODORO_CONFIG.SHORT_BREAK_DURATION)
-      }
+      setSessionsCompleted((prev) => {
+        const newSessionsCompleted = prev + 1
+        // 每 4 个工作会话后切换到长休息，否则切换到短休息
+        if (newSessionsCompleted % POMODORO_CONFIG.SESSIONS_BEFORE_LONG_BREAK === 0) {
+          setMode(SESSION_TYPE.LONG_BREAK as SessionType)
+          setTimeRemaining(POMODORO_CONFIG.LONG_BREAK_DURATION)
+        } else {
+          setMode(SESSION_TYPE.SHORT_BREAK as SessionType)
+          setTimeRemaining(POMODORO_CONFIG.SHORT_BREAK_DURATION)
+        }
+        return newSessionsCompleted
+      })
     } else {
       // 休息结束后切换到工作模式
       setMode(SESSION_TYPE.WORK as SessionType)
