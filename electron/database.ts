@@ -1,29 +1,46 @@
 import initSqlJs from 'sql.js'
 
-// sql.js 的类型定义
-type SqlJsDb = Awaited<ReturnType<typeof initSqlJs>>
-type SqlDatabase = InstanceType<SqlJsDb['Database']>
-
 /**
  * 数据库类
  * 封装 sql.js 的操作，提供番茄钟会话的持久化存储
- * 数据存储在内存中（刷新后丢失），如需持久化可考虑 IndexedDB
+ * 数据持久化到文件，刷新/重启后数据保留
  */
 export class Database {
   // sql.js 数据库实例
-  private db: SqlDatabase | null = null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private db: any = null
+  // 数据库文件路径
+  private dbPath: string
+  // 是否需要保存（数据有变化时设为 true）
+  private dirty = false
+
+  constructor(dbPath: string) {
+    this.dbPath = dbPath
+  }
 
   /**
    * 初始化数据库
-   * 创建 sessions 表和索引（如不存在）
+   * 1. 加载已有数据文件（如存在）
+   * 2. 创建 sessions 表和索引（如不存在）
    */
   async init(): Promise<void> {
     try {
       // 初始化 sql.js（异步加载 WebAssembly）
-      const SQL = await initSqlJs()
+      const SqlJs = await initSqlJs()
+      const DatabaseConstructor = SqlJs.Database
 
-      // 创建内存数据库实例
-      this.db = new SQL.Database()
+      // 尝试从文件加载已有数据库
+      try {
+        const fileData = require('fs').readFileSync(this.dbPath)
+        // @ts-ignore - tsgo 对 new 表达式类型推断有问题
+        this.db = new DatabaseConstructor(fileData)
+        console.log('数据库加载成功:', this.dbPath)
+      } catch {
+        // 文件不存在，创建新数据库
+        // @ts-ignore - tsgo 对 new 表达式类型推断有问题
+        this.db = new DatabaseConstructor()
+        console.log('创建新数据库:', this.dbPath)
+      }
 
       // 创建会话表：存储每次番茄钟的开始时间、持续时长和类型
       this.db.run(`
@@ -40,10 +57,42 @@ export class Database {
         CREATE INDEX IF NOT EXISTS idx_started_at ON sessions(started_at)
       `)
 
+      this.dirty = false
       console.log('数据库初始化成功')
     } catch (err) {
       console.error('数据库初始化失败:', err)
       throw err
+    }
+  }
+
+  /**
+   * 保存数据库到文件
+   * 数据有变化时自动调用，也可在关闭前手动调用
+   */
+  save(): void {
+    if (!this.db) return
+    try {
+      const data = this.db.export()
+      const buffer = Buffer.from(data)
+      require('fs').writeFileSync(this.dbPath, buffer)
+      this.dirty = false
+      console.log('数据库已保存:', this.dbPath)
+    } catch (err) {
+      console.error('数据库保存失败:', err)
+    }
+  }
+
+  /**
+   * 关闭数据库
+   * 关闭前确保数据已保存
+   */
+  close(): void {
+    if (this.dirty) {
+      this.save()
+    }
+    if (this.db) {
+      this.db.close()
+      this.db = null
     }
   }
 
@@ -63,6 +112,8 @@ export class Database {
         'INSERT INTO sessions (started_at, duration, type) VALUES (?, ?, ?)',
         [startedAt, duration, type]
       )
+      this.dirty = true
+      this.save() // 每次保存后立即持久化，防止数据丢失
       return { success: true }
     } catch (err) {
       return { success: false, error: (err as Error).message }
@@ -167,6 +218,8 @@ export class Database {
 
     try {
       this.db.run('DELETE FROM sessions')
+      this.dirty = true
+      this.save()
       return { success: true }
     } catch (err) {
       return { success: false, error: (err as Error).message }
@@ -217,6 +270,8 @@ export class Database {
         )
       })
 
+      this.dirty = true
+      this.save()
       return { success: true, count: mockData.length }
     } catch (err) {
       return { success: false, error: (err as Error).message }

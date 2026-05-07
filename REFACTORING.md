@@ -416,6 +416,41 @@ import { use } from 'react'
 const context = use(DatabaseContext)
 ```
 
+### 数据库持久化
+
+sql.js 数据库现在支持持久化存储，数据不会在重启后丢失。
+
+**存储位置：** `app.getPath('userData')/tomato-clock.db`（Electron 用户数据目录）
+
+**实现方式：**
+- 启动时从文件加载已有数据库（如存在）
+- 每次 `saveSession`、`clearAll`、`generateMockData` 后自动保存
+- 应用退出时通过 `before-quit` 事件确保数据写入
+
+```typescript
+// electron/database.ts
+async init(): Promise<void> {
+  const SqlJs = await initSqlJs()
+  const DatabaseConstructor = SqlJs.Database
+
+  try {
+    // 加载已有数据库
+    const fileData = require('fs').readFileSync(this.dbPath)
+    // @ts-ignore - tsgo 对 new 表达式类型推断有问题
+    this.db = new DatabaseConstructor(fileData)
+  } catch {
+    // 文件不存在，创建新数据库
+    // @ts-ignore
+    this.db = new DatabaseConstructor()
+  }
+}
+
+save(): void {
+  const data = this.db.export()
+  require('fs').writeFileSync(this.dbPath, Buffer.from(data))
+}
+```
+
 **注意：** `Progress` 组件保留 `forwardRef`，因为它包装的是 Radix UI 复杂类型组件，迁移后 TypeScript 类型不兼容。
 
 ## 后续优化建议

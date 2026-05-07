@@ -16,8 +16,8 @@ const __dirname = path.dirname(__filename)
 let mainWindow: BrowserWindow | null = null
 let notificationWindow: BrowserWindow | null = null
 
-// sql.js 数据库实例（运行在主进程中）
-const db = new Database()
+// sql.js 数据库实例（运行在主进程中，持久化到文件）
+const db = new Database(path.join(app.getPath('userData'), 'tomato-clock.db'))
 
 // 本地 HTTP 服务器实例（用于解决 file:// 协议的中文路径问题）
 let server: http.Server | null = null
@@ -159,6 +159,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// 应用退出前（所有平台都会触发）
+app.on('before-quit', () => {
+  db.close()
 })
 
 // IPC 处理器：显示系统通知
