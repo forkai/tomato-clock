@@ -2,6 +2,12 @@
 
 基于 Electron + React 的番茄钟桌面软件，支持数据统计和多种通知方式。
 
+## 截图
+
+![计时器页面](./docs/screenshots/timer-page.png)
+
+![统计页面](./docs/screenshots/stats-page.png)
+
 ## 功能特性
 
 - **标准番茄钟**：25分钟专注 + 5分钟短休息，每4个番茄后15分钟长休息

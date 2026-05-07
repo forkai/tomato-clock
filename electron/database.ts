@@ -1,4 +1,5 @@
 import initSqlJs from 'sql.js'
+import { readFileSync, writeFileSync } from 'fs'
 
 /**
  * 数据库类
@@ -31,7 +32,7 @@ export class Database {
 
       // 尝试从文件加载已有数据库
       try {
-        const fileData = require('fs').readFileSync(this.dbPath)
+        const fileData = readFileSync(this.dbPath)
         // @ts-ignore - tsgo 对 new 表达式类型推断有问题
         this.db = new DatabaseConstructor(fileData)
         console.log('数据库加载成功:', this.dbPath)
@@ -74,7 +75,7 @@ export class Database {
     try {
       const data = this.db.export()
       const buffer = Buffer.from(data)
-      require('fs').writeFileSync(this.dbPath, buffer)
+      writeFileSync(this.dbPath, buffer)
       this.dirty = false
       console.log('数据库已保存:', this.dbPath)
     } catch (err) {

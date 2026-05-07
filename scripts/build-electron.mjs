@@ -18,7 +18,7 @@ await esbuild.build({
   bundle: true,
   platform: 'node',
   outfile: join(outDir, 'main.js'),
-  external: ['electron', 'sql.js', 'fs'],
+  external: ['electron', 'sql.js'],
   format: 'esm',
   target: 'node18'
 })
