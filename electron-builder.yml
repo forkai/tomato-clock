@@ -2,6 +2,7 @@ appId: com.tomato.clock
 productName: 番茄钟
 directories:
   buildResources: build
+electronDist: node_modules/electron/dist
 files:
   - dist/**/*
   - dist-electron/*.js
