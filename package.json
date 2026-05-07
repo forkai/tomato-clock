@@ -9,7 +9,7 @@
 		"build": "tsgo && vp build && npm run build:electron",
 		"build:electron": "node scripts/build-electron.mjs",
 		"electron:dev": "concurrently \"vp dev\" \"electron .\"",
-		"electron:build": "npm run build && electron-builder",
+		"electron:build": "cross-env ELECTRON_BUILDER_FORCE_LOCAL_TOOLCHAIN=1 npm run build && electron-builder",
 		"test": "vp test",
 		"test:watch": "vp test --watch",
 		"typecheck": "tsgo --noEmit"
