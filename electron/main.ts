@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Notification, ipcMain, screen } from 'electron'
+import { app, BrowserWindow, Notification, ipcMain, screen, Tray, Menu, nativeImage } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { createRequire } from 'module'
@@ -15,6 +15,10 @@ const __dirname = path.dirname(__filename)
 // 保持窗口引用防止被 GC 回收
 let mainWindow: BrowserWindow | null = null
 let notificationWindow: BrowserWindow | null = null
+let tray: Tray | null = null
+
+// 用于判断是否是用户主动退出（而不是被系统关闭）
+let isQuitting = false
 
 // sql.js 数据库实例（运行在主进程中，持久化到文件）
 const db = new Database(path.join(app.getPath('userData'), 'tomato-clock.db'))
@@ -35,10 +39,25 @@ function createMainWindow() {
     backgroundColor: '#030712', // 深色背景与主题一致
     autoHideMenuBar: true,       // 隐藏菜单栏（快捷键不受影响）
     icon: path.join(__dirname, '../build/icon.png'),
+    skipTaskbar: true,           // 隐藏任务栏图标
+    show: false,                  // 启动时隐藏，等待 ready-to-show 再显示
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), // 预加载脚本路径
       contextIsolation: true,    // 启用上下文隔离（安全）
       nodeIntegration: false     // 禁用 Node.js 集成（安全）
+    }
+  })
+
+  // 窗口准备好后显示（避免启动时闪烁）
+  mainWindow.once('ready-to-show', () => {
+    mainWindow?.show()
+  })
+
+  // 拦截窗口关闭事件，隐藏而非退出
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault()
+      mainWindow?.hide()
     }
   })
 
@@ -134,10 +153,61 @@ function createNotificationWindow(message: string) {
   }, 5000)
 }
 
+/**
+ * 创建系统托盘
+ * 用于在 Windows 通知区域显示应用图标，提供快速访问菜单
+ */
+function createTray() {
+  const iconPath = path.join(__dirname, '../build/icon.png')
+  const icon = nativeImage.createFromPath(iconPath)
+
+  tray = new Tray(icon.resize({ width: 16, height: 16 }))
+  tray.setToolTip('番茄钟')
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示窗口',
+      click: () => {
+        mainWindow?.show()
+        mainWindow?.focus()
+      }
+    },
+    {
+      label: '隐藏窗口',
+      click: () => {
+        mainWindow?.hide()
+      }
+    },
+    { type: 'separator' },
+    {
+      label: '退出',
+      click: () => {
+        isQuitting = true
+        app.quit()
+      }
+    }
+  ])
+
+  tray.setContextMenu(contextMenu)
+
+  // 点击托盘图标：显示/隐藏窗口
+  tray.on('click', () => {
+    if (mainWindow?.isVisible()) {
+      mainWindow.hide()
+    } else {
+      mainWindow?.show()
+      mainWindow?.focus()
+    }
+  })
+}
+
 // 应用准备就绪时（Electron 启动完成后）
 app.whenReady().then(async () => {
   // 初始化 sql.js 数据库（异步操作）
   await db.init()
+
+  // 创建系统托盘
+  createTray()
 
   // 创建主窗口
   createMainWindow()
@@ -163,6 +233,7 @@ app.on('window-all-closed', () => {
 
 // 应用退出前（所有平台都会触发）
 app.on('before-quit', () => {
+  isQuitting = true
   db.close()
 })
 

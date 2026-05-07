@@ -15,19 +15,20 @@
 - **完整统计**：今日完成数、本周趋势图表
 - **多种通知**：系统桌面通知 + 提示音 + 桌面悬浮窗口
 - **深色主题**：护眼深色界面设计
+- **系统托盘**：运行在 Windows 通知区域，最小化不占任务栏
 
 ## 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 桌面框架 | Electron 28 |
-| 前端框架 | React 19 + Hooks |
-| 构建工具 | Vite+ (vp) + esbuild |
-| 类型检查 | TypeScript (tsgo) |
-| UI 组件 | shadcn/ui + Radix UI |
-| 样式 | Tailwind CSS 4 (Lightning CSS) |
-| 数据库 | sql.js (SQLite in WASM) |
-| 测试 | Playwright + Vitest |
+| 层级     | 技术                           |
+| -------- | ------------------------------ |
+| 桌面框架 | Electron 28                    |
+| 前端框架 | React 19 + Hooks               |
+| 构建工具 | Vite+ (vp) + esbuild           |
+| 类型检查 | TypeScript (tsgo)              |
+| UI 组件  | shadcn/ui + Radix UI           |
+| 样式     | Tailwind CSS 4 (Lightning CSS) |
+| 数据库   | sql.js (SQLite in WASM)        |
+| 测试     | Playwright + Vitest            |
 
 ## 文件架构
 
@@ -96,11 +97,11 @@ npm test -- path/to     # 运行指定测试文件
 app.getPath('userData') + '/tomato-clock.db'
 ```
 
-| 操作系统 | 路径示例 |
-|---------|---------|
-| Windows | `%APPDATA%/番茄钟/tomato-clock.db` |
-| macOS | `~/Library/Application Support/tomato-clock/tomato-clock.db` |
-| Linux | `~/.config/tomato-clock/tomato-clock.db` |
+| 操作系统 | 路径示例                                                     |
+| -------- | ------------------------------------------------------------ |
+| Windows  | `%APPDATA%/番茄钟/tomato-clock.db`                           |
+| macOS    | `~/Library/Application Support/tomato-clock/tomato-clock.db` |
+| Linux    | `~/.config/tomato-clock/tomato-clock.db`                     |
 
 ## React 19 特性
 
