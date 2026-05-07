@@ -341,10 +341,91 @@ npm run electron:build
 | 生产构建 | ~5s | ~1s |
 | 类型检查 | N/A | ~1s (tsgo) |
 
+## React 19 迁移
+
+### React Compiler
+
+启用 React Compiler（babel-plugin-react-compiler）后，编译器自动为所有函数添加记忆化，不再需要手动使用 `useCallback`。
+
+**配置变更（vite.config.ts）：**
+
+```typescript
+// vite.config.ts
+import React from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [
+    React({
+      babel: {
+        plugin: [
+          'babel-plugin-react-compiler',
+          { target: '19' }
+        ]
+      }
+    }),
+    // ...
+  ],
+})
+```
+
+**效果：**
+- 移除 18 处 `useCallback` 调用
+- 代码更简洁，功能完全等价
+- `onCompleteRef` useRef 模式保留（解决 interval 内 stale closure，Compiler 无法消除）
+
+### forwardRef 移除
+
+React 19 中 `ref` 成为普通 prop，不再需要 `forwardRef` 包装。
+
+| 组件 | 文件 | 状态 |
+|------|------|------|
+| `Button` | [button.tsx](src/components/ui/button.tsx) | ✅ 已迁移 |
+| `Card` | [card.tsx](src/components/ui/card.tsx) | ✅ 已迁移 |
+| `CardHeader` | [card.tsx](src/components/ui/card.tsx) | ✅ 已迁移 |
+| `CardTitle` | [card.tsx](src/components/ui/card.tsx) | ✅ 已迁移 |
+| `CardContent` | [card.tsx](src/components/ui/card.tsx) | ✅ 已迁移 |
+| `Progress` | [progress.tsx](src/components/ui/progress.tsx) | ⚠️ 保留 — 包装 Radix UI 复杂类型组件 |
+
+**迁移示例：**
+
+```typescript
+// React 18 (deprecated)
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, ...props }, ref) => <button ref={ref} {...props} />
+)
+
+// React 19 — ref 作为普通 prop
+const Button = ({ ref, className, ...props }: ButtonProps) => (
+  <button ref={ref} {...props} />
+)
+```
+
+### use() Hook
+
+React 19 的 `use()` Hook 可以读取 Context、Promise 或 Iterable，且支持条件调用。
+
+**[useDatabase.tsx](src/hooks/useDatabase.tsx) 优化：**
+
+```typescript
+// React 18
+import { useContext } from 'react'
+const context = useContext(DatabaseContext)
+
+// React 19 — use() 语义更清晰
+import { use } from 'react'
+const context = use(DatabaseContext)
+```
+
+**注意：** `Progress` 组件保留 `forwardRef`，因为它包装的是 Radix UI 复杂类型组件，迁移后 TypeScript 类型不兼容。
+
 ## 后续优化建议
 
 1. ~~将所有 `.js` 测试文件迁移到 `.ts`~~ ✅ 已完成
 2. ~~使用 `vitest` globals 替代显式导入~~ - 已使用 globals
 3. ~~迁移到 `rolldownOptions` 替代 `esbuildOptions`~~ - 已移除弃用选项
-4. 添加更多 Zod Schema 验证 - 根据需要添加
-5. 等待 vite-plus 原生支持 electron 插件 - 外部依赖
+4. ~~启用 React Compiler~~ ✅ 已完成
+5. ~~移除 `useCallback`（Compiler 自动处理）~~ ✅ 已完成
+6. ~~迁移 `forwardRef` 到 React 19 原生 `ref`~~ ✅ 已完成（Progress 除外）
+7. ~~使用 `use()` Hook 替代 `useContext`~~ ✅ 已完成
+8. 添加更多 Zod Schema 验证 - 根据需要添加
+9. 等待 vite-plus 原生支持 electron 插件 - 外部依赖

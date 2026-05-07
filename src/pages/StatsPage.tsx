@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDatabase } from '@/hooks/useDatabase'
 import { TodayStats } from '@/components/Stats/TodayStats'
@@ -46,14 +46,14 @@ export function StatsPage() {
     fetchStats()
   }, [dataVersion, getTodayStats, getWeekStats])
 
-  const handleGenerateMockData = useCallback(async () => {
+  const handleGenerateMockData = async () => {
     await generateMockData()
-  }, [generateMockData])
+  }
 
-  const handleClearData = useCallback(async () => {
+  const handleClearData = async () => {
     await clearAllData()
     setShowConfirm(false)
-  }, [clearAllData])
+  }
 
   return (
     <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">

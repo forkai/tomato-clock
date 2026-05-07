@@ -5,7 +5,16 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugin: [
+          'babel-plugin-react-compiler',
+          {
+            target: '19'
+          }
+        ]
+      }
+    }),
     tailwindcss()
   ],
   resolve: {

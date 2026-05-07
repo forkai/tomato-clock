@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTimer } from '@/hooks/useTimer'
 import { useNotification } from '@/hooks/useNotification'
@@ -25,17 +24,14 @@ function TimerPage() {
    * 1. 显示通知提醒用户
    * 2. 如果是工作会话，保存到数据库
    */
-  const handlePomodoroComplete = useCallback(
-    (mode: SessionType) => {
-      // 显示系统通知或浮窗通知
-      notifyPomodoroComplete(mode)
-      // 仅工作会话需要保存，短长休息不需要记录
-      if (mode === 'work') {
-        saveSession(POMODORO_CONFIG.WORK_DURATION, mode)
-      }
-    },
-    [notifyPomodoroComplete, saveSession]
-  )
+  const handlePomodoroComplete = (mode: SessionType) => {
+    // 显示系统通知或浮窗通知
+    notifyPomodoroComplete(mode)
+    // 仅工作会话需要保存，短长休息不需要记录
+    if (mode === 'work') {
+      saveSession(POMODORO_CONFIG.WORK_DURATION, mode)
+    }
+  }
 
   // 从 useTimer hook 获取状态和操作
   const {

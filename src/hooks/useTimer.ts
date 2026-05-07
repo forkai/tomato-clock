@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { POMODORO_CONFIG, SESSION_TYPE } from '@/utils/constants'
 import type { SessionType } from '@/types/timer'
 
@@ -50,7 +50,7 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
    * @param currentMode 当前模式
    * @returns 对应的时长（秒）
    */
-  const getDuration = useCallback((currentMode: SessionType): number => {
+  const getDuration = (currentMode: SessionType): number => {
     switch (currentMode) {
       case SESSION_TYPE.WORK as SessionType:
         return POMODORO_CONFIG.WORK_DURATION // 25 分钟
@@ -61,7 +61,7 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
       default:
         return POMODORO_CONFIG.WORK_DURATION
     }
-  }, [])
+  }
 
   /**
    * 处理计时器完成
@@ -70,7 +70,7 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
    * 3. 更新完成计数
    * 4. 自动切换到下一个模式
    */
-  const handleComplete = useCallback(() => {
+  const handleComplete = () => {
     // 停止定时器
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
@@ -101,7 +101,7 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
       setMode(SESSION_TYPE.WORK as SessionType)
       setTimeRemaining(POMODORO_CONFIG.WORK_DURATION)
     }
-  }, [mode, sessionsCompleted])
+  }
 
   // 定时器逻辑：每秒递减 timeRemaining
   useEffect(() => {
@@ -131,27 +131,27 @@ export function useTimer({ onComplete }: UseTimerProps = {}) {
   }, [isRunning, timeRemaining, handleComplete])
 
   /** 开始计时 */
-  const start = useCallback(() => {
+  const start = () => {
     setIsRunning(true)
-  }, [])
+  }
 
   /** 暂停计时 */
-  const pause = useCallback(() => {
+  const pause = () => {
     setIsRunning(false)
-  }, [])
+  }
 
   /** 重置计时器到当前模式的初始时长 */
-  const reset = useCallback(() => {
+  const reset = () => {
     setIsRunning(false)
     setTimeRemaining(getDuration(mode))
-  }, [mode, getDuration])
+  }
 
   /** 切换模式（如在工作界面切换到休息） */
-  const switchMode = useCallback((newMode: SessionType) => {
+  const switchMode = (newMode: SessionType) => {
     setMode(newMode)
     setTimeRemaining(getDuration(newMode))
     setIsRunning(false)
-  }, [getDuration])
+  }
 
   return {
     mode,                 // 当前模式

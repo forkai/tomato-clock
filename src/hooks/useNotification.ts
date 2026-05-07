@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import type { SessionType } from '@/types/timer'
 
 /**
@@ -14,7 +13,7 @@ export function useNotification() {
    * 使用 Web Audio API 生成一个简单的蜂鸣声
    * 用于在后台或通知被禁用时提供声音提醒
    */
-  const playSound = useCallback(() => {
+  const playSound = () => {
     // 创建音频上下文（兼容 Safari 的 webkit 前缀）
     const audioContext = new (window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)()
     const oscillator = audioContext.createOscillator()
@@ -35,7 +34,7 @@ export function useNotification() {
     // 播放 0.5 秒后停止
     oscillator.start(audioContext.currentTime)
     oscillator.stop(audioContext.currentTime + 0.5)
-  }, [])
+  }
 
   /**
    * 显示系统通知
@@ -43,31 +42,31 @@ export function useNotification() {
    * @param title 通知标题
    * @param body 通知正文
    */
-  const showSystemNotification = useCallback((title: string, body: string) => {
+  const showSystemNotification = (title: string, body: string) => {
     // 通过 IPC 调用主进程的 Notification
     if (window.electronAPI?.showNotification) {
       window.electronAPI.showNotification(title, body)
     }
-  }, [])
+  }
 
   /**
    * 显示浮窗通知
    * 在桌面右上角显示一个小型通知窗口
    * @param message 要显示的消息
    */
-  const showFloatingWindow = useCallback((message: string) => {
+  const showFloatingWindow = (message: string) => {
     // 通过 IPC 调用主进程创建浮窗
     if (window.electronAPI?.showNotificationWindow) {
       window.electronAPI.showNotificationWindow(message)
     }
-  }, [])
+  }
 
   /**
    * 番茄钟完成时的综合通知
    * 同时触发：系统通知 + 声音 + 浮窗
    * @param mode 完成时的模式
    */
-  const notifyPomodoroComplete = useCallback((mode: SessionType) => {
+  const notifyPomodoroComplete = (mode: SessionType) => {
     // 判断是工作完成还是休息结束
     const isBreak = mode !== 'work'
 
@@ -81,7 +80,7 @@ export function useNotification() {
     showSystemNotification(title, body) // 系统桌面通知
     playSound()                          // 蜂鸣提示音
     showFloatingWindow(isBreak ? '开始工作!' : '休息一下') // 浮窗提示
-  }, [showSystemNotification, playSound, showFloatingWindow])
+  }
 
   return {
     playSound,

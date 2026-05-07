@@ -1,4 +1,4 @@
-import { useState, useCallback, createContext, useContext, type ReactNode } from 'react'
+import { use, useState, createContext, type ReactNode } from 'react'
 import type { SessionType } from '@/types/timer'
 
 /**
@@ -45,49 +45,49 @@ export function DatabaseProvider({ children }: DatabaseProviderProps) {
   /**
    * 保存会话并更新版本号
    */
-  const saveSession = useCallback(async (duration: number, type: SessionType) => {
+  const saveSession = async (duration: number, type: SessionType) => {
     const result = await window.electronAPI.saveSession(duration, type)
     if (result.success) {
       setDataVersion((v) => v + 1)
     }
     return result
-  }, [])
+  }
 
   /**
    * 获取今日统计（依赖 dataVersion 以在数据变化时刷新）
    */
-  const getTodayStats = useCallback(async () => {
+  const getTodayStats = async () => {
     return await window.electronAPI.getTodayStats()
-  }, [dataVersion])
+  }
 
   /**
    * 获取本周统计
    */
-  const getWeekStats = useCallback(async () => {
+  const getWeekStats = async () => {
     return await window.electronAPI.getWeekStats()
-  }, [dataVersion])
+  }
 
   /**
    * 清除所有数据
    */
-  const clearAllData = useCallback(async () => {
+  const clearAllData = async () => {
     const result = await window.electronAPI.clearAllData()
     if (result.success) {
       setDataVersion((v) => v + 1)
     }
     return result
-  }, [])
+  }
 
   /**
    * 生成模拟数据
    */
-  const generateMockData = useCallback(async () => {
+  const generateMockData = async () => {
     const result = await window.electronAPI.generateMockData()
     if (result.success) {
       setDataVersion((v) => v + 1)
     }
     return result
-  }, [])
+  }
 
   const value: DatabaseContextValue = {
     dataVersion,
@@ -110,7 +110,7 @@ export function DatabaseProvider({ children }: DatabaseProviderProps) {
  * @throws 如果不在 DatabaseProvider 内调用
  */
 export function useDatabase(): DatabaseContextValue {
-  const context = useContext(DatabaseContext)
+  const context = use(DatabaseContext)
   if (!context) {
     throw new Error('useDatabase 必须在 DatabaseProvider 内使用')
   }
