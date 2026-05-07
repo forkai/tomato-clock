@@ -9,7 +9,7 @@
     "build": "tsgo && vp build && npm run build:electron",
     "build:electron": "node scripts/build-electron.mjs",
     "electron:dev": "concurrently \"vp dev\" \"electron .\"",
-    "electron:build": "npm run build && electron-builder",
+    "electron:build": "cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/ npm run build && electron-builder",
     "test": "vp test",
     "test:watch": "vp test --watch",
     "typecheck": "tsgo --noEmit"
@@ -36,7 +36,9 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
+    "7zip-bin": "^5.2.0",
     "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0",
     "electron": "^28.2.0",
     "electron-builder": "^24.13.3",
     "esbuild": "^0.24.0",

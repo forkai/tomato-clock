@@ -4,23 +4,11 @@ directories:
   buildResources: build
 files:
   - dist/**/*
-  - electron/**/*
+  - dist-electron/*.js
   - package.json
 asar: true
 win:
   target:
-    - target: nsis
+    - target: portable
       arch:
         - x64
-  icon: build/icon.png
-  fileAssociations:
-    - ext: exe
-      icon: build/icon.png
-mac:
-  target:
-    - dmg
-  icon: build/icon.png
-linux:
-  target:
-    - AppImage
-  icon: build/icon.png
