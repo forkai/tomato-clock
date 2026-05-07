@@ -24,7 +24,7 @@ interface Stats {
 }
 
 export function StatsPage() {
-  const { getTodayStats, getWeekStats, clearAllData, generateMockData, dataVersion } = useDatabase()
+  const { getTodayStats, getWeekStats, clearAllData, dataVersion } = useDatabase()
   const [showConfirm, setShowConfirm] = useState(false)
   const [stats, setStats] = useState<Stats>({
     todayStats: { count: 0, totalDuration: 0 },
@@ -45,10 +45,6 @@ export function StatsPage() {
     }
     fetchStats()
   }, [dataVersion, getTodayStats, getWeekStats])
-
-  const handleGenerateMockData = async () => {
-    await generateMockData()
-  }
 
   const handleClearData = async () => {
     await clearAllData()
@@ -74,13 +70,6 @@ export function StatsPage() {
         </Link>
 
         <div className="flex gap-2">
-          <button
-            onClick={handleGenerateMockData}
-            className="text-xs text-foreground/60 hover:text-foreground px-2 py-1 rounded hover:bg-secondary/50 transition-colors"
-          >
-            模拟数据
-          </button>
-
           <button
             onClick={() => setShowConfirm(true)}
             className="text-xs text-foreground/60 hover:text-red-500 px-2 py-1 rounded hover:bg-secondary/50 transition-colors"
