@@ -19,7 +19,7 @@ export function NotificationToast({ message, type = 'info', onClose }: Notificat
       <div className="flex items-center gap-3">
         <span>{message}</span>
         {onClose && (
-          <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <button onClick={onClose} className="ml-2 hover:opacity-70 cursor-pointer">
             ×
           </button>
         )}
