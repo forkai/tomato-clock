@@ -16,6 +16,7 @@ extraResources:
 asarUnpack:
   - build/**/*
 asar: true
+compression: maximum
 win:
   target: portable
   icon: build/icon.ico
