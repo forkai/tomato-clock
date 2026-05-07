@@ -52,11 +52,11 @@ export function StatsPage() {
   }
 
   return (
-    <div className="h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
+    <div className="min-h-dvh bg-background px-4 sm:px-6 py-4 sm:py-6 flex flex-col">
       <div className="flex items-center justify-between mb-3 sm:mb-4 flex-shrink-0">
         <Link
           to="/"
-          className="p-2 text-foreground/60 hover:text-foreground rounded-lg hover:bg-secondary/50 transition-colors"
+          className="p-2 text-foreground/50 hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
           title="返回计时器"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@ export function StatsPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowConfirm(true)}
-            className="text-xs text-foreground/60 hover:text-red-500 px-2 py-1 rounded hover:bg-secondary/50 transition-colors"
+            className="text-xs text-foreground/50 hover:text-red-400 px-2 py-1 rounded hover:bg-secondary/50 transition-colors cursor-pointer"
           >
             清除数据
           </button>

@@ -16,10 +16,10 @@ export function TimerDisplay({ timeRemaining, mode, isRunning }: TimerDisplayPro
 
   return (
     <div className="flex flex-col items-center">
-      <span className={cn('text-sm font-medium uppercase tracking-wider mb-2', color)}>
+      <span className={cn('text-sm font-medium uppercase tracking-widest mb-2', color)}>
         {displayLabel}
       </span>
-      <span className="text-5xl font-bold text-foreground tabular-nums">
+      <span className="text-5xl font-bold text-foreground tabular-nums tracking-tight">
         {formatTime(timeRemaining)}
       </span>
     </div>

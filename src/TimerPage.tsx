@@ -56,11 +56,11 @@ function TimerPage() {
   const progress = ((totalDuration - timeRemaining) / totalDuration) * 100
 
   return (
-    <div className="h-screen bg-background flex flex-col items-center px-6 py-8">
+    <div className="min-h-dvh bg-background flex flex-col items-center px-6 py-8">
       {/* 顶部栏：显示完成数和统计入口 */}
       <div className="w-full flex justify-between items-center mb-4 flex-shrink-0">
         {/* 显示已完成的番茄钟数量 */}
-        <div className="text-sm text-foreground/60">已完成 {sessionsCompleted} 个番茄</div>
+        <div className="text-sm text-foreground/50">已完成 {sessionsCompleted} 个番茄</div>
 
         {/* 跳转到统计页面的链接 */}
         <Link
@@ -70,7 +70,7 @@ function TimerPage() {
         >
           {/* 统计图表图标 */}
           <svg
-            className="w-6 h-6 text-foreground/60"
+            className="w-6 h-6 text-foreground/50"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

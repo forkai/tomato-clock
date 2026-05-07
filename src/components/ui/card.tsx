@@ -4,7 +4,11 @@ import { cn } from '@/lib/utils'
 const Card = ({ ref, className, ...props }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) => (
   <div
     ref={ref}
-    className={cn('rounded-lg border border-secondary bg-card p-6', className)}
+    className={cn(
+      'rounded-xl border border-border bg-card/80 backdrop-blur-sm p-5 sm:p-6',
+      'shadow-[0_4px_24px_rgba(0,0,0,0.3)]',
+      className
+    )}
     {...props}
   />
 )
@@ -15,10 +19,10 @@ const CardHeader = ({ ref, className, ...props }: React.HTMLAttributes<HTMLDivEl
 )
 CardHeader.displayName = 'CardHeader'
 
-const CardTitle = ({ ref, className, ...props }: React.HTMLAttributes<HTMLHeadingElement> & { ref?: React.Ref<HTMLHeadingElement> }) => (
+const CardTitle = ({ ref, className, ...props }: React.HTMLAttributes<HTMLHeadingElement> & { ref?: React.Ref<HTMLDivElement> }) => (
   <h3
     ref={ref}
-    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+    className={cn('text-lg font-semibold leading-none tracking-tight text-foreground', className)}
     {...props}
   />
 )

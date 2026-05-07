@@ -7,7 +7,7 @@ interface WeekStatsProps {
 
 export function WeekStats({ stats }: WeekStatsProps) {
   return (
-    <Card className="bg-secondary/50 flex-1 flex flex-col min-h-0">
+    <Card className="bg-card/60 flex-1 flex flex-col min-h-0">
       <CardHeader className="flex-shrink-0 pb-2">
         <CardTitle className="text-base sm:text-lg">本周趋势</CardTitle>
       </CardHeader>
