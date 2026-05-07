@@ -29,9 +29,9 @@ let server: http.Server | null = null
 // 获取应用图标路径（兼容开发和打包模式）
 function getIconPath(): string {
   if (app.isPackaged) {
-    return path.join(process.resourcesPath, 'build', 'icon.png')
+    return path.join(process.resourcesPath, 'build', 'icon.ico')
   }
-  return path.join(__dirname, '..', 'build', 'icon.png')
+  return path.join(__dirname, '..', 'build', 'icon.ico')
 }
 
 /**

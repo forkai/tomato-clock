@@ -13,7 +13,10 @@ extraResources:
     to: build/
     filter:
       - "**/*"
+asarUnpack:
+  - build/**/*
 asar: true
 win:
   target: portable
+  icon: build/icon.ico
   signAndEditExecutable: false
